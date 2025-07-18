@@ -1,29 +1,38 @@
-export default function Checklist({ tasks, completedTasks, toggleTask }) {
+import { useState, useEffect } from "react";
+
+export default function Checklist({ tasks }) {
+  const [checkedTasks, setCheckedTasks] = useState(() => {
+    if (typeof window !== "undefined") {
+      return JSON.parse(localStorage.getItem("checkedTasks")) || [];
+    }
+    return [];
+  });
+
+  useEffect(() => {
+    localStorage.setItem("checkedTasks", JSON.stringify(checkedTasks));
+  }, [checkedTasks]);
+
+  const toggleTask = (task) => {
+    setCheckedTasks((prev) =>
+      prev.includes(task) ? prev.filter((t) => t !== task) : [...prev, task]
+    );
+  };
+
   return (
-    <ul className="space-y-2 w-full max-w-md mt-4">
+    <div className="space-y-2">
       {tasks.map((task, index) => (
-        <li
+        <div
           key={index}
-          className={`p-4 rounded shadow flex items-center space-x-2 ${
-            completedTasks.includes(task) ? "bg-green-100" : "bg-white"
+          onClick={() => toggleTask(task)}
+          className={`cursor-pointer p-3 rounded-lg border transition ${
+            checkedTasks.includes(task)
+              ? "bg-green-100 dark:bg-green-700 border-green-400 dark:border-green-500 text-green-900 dark:text-green-100 line-through"
+              : "bg-gray-50 dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100"
           }`}
         >
-          <input
-            type="checkbox"
-            checked={completedTasks.includes(task)}
-            onChange={() => toggleTask(task)}
-            className="accent-blue-500 w-5 h-5"
-          />
-          <span
-            className={`text-gray-800 ${
-              completedTasks.includes(task) ? "line-through text-gray-500" : ""
-            }`}
-          >
-            {task}
-          </span>
-        </li>
+          {task}
+        </div>
       ))}
-    </ul>
+    </div>
   );
 }
-
