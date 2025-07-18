@@ -34,8 +34,7 @@ export default function Home() {
           🚀 Onboarding Portal
         </h1>
         <p className="text-gray-700 dark:text-gray-300">
-          Get your personalized onboarding checklist based on your role,
-          department, and level.
+          ONBOARDING CHECKLIST
         </p>
         <FilterForm onSubmit={fetchTasks} />
         {loading ? (
